@@ -516,7 +516,75 @@ Mapeo de entornos cerrados (oficinas, laberintos)
 Navegación reactiva basada en LIDAR
 
 Localización AMCL para posicionamiento precion
+```
 
 ----
+# Resultados 
+# IMAGEN 1: Gazebo 🏢
 
-# Resultados
+![Imagen de WhatsApp 2025-10-15 a las 12 13 32_f27c08df](https://github.com/user-attachments/assets/dd159101-427e-4ad2-a6e2-47462a62808f)
+
+
+Qué ves:
+
+Entorno de simulación Gazebo con el TurtleBot3 (robot pequeño)
+
+Mundo predeterminado con paredes, pisos y objetos
+
+El robot tiene el LIDAR (sensor láser) activo
+
+Relación con el código:
+
+dockerfile
+CMD ["bash", "-c", "source /opt/ros/noetic/setup.bash && export TURTLEBOT3_MODEL=burger && roslaunch turtlebot3_gazebo turtlebot3_world.launch"]
+Este comando inicia Gazebo con el mundo "turtlebot3_world"
+
+# IMAGEN 2: RViz 🗺️
+
+![Imagen de WhatsApp 2025-10-15 a las 12 21 27_20816088](https://github.com/user-attachments/assets/6e1f72d0-48c6-45fc-97aa-97e096bb6b7f)
+
+Qué ves:
+
+Visualización de RViz con el mapa en tiempo real
+
+Grid: Cuadrícula de referencia
+
+RobotModel: Modelo 3D del TurtleBot3
+
+LaserScan: Puntos verdes del LIDAR (no visible pero configurado)
+
+Map: Capa donde se genera el mapa (gris)
+
+Relación con el código:
+
+bash
+roslaunch turtlebot3_slam turtlebot3_slam.launch slam_methods:=gmapping
+Este comando abre RViz configurado para SLAM
+
+# IMAGEN 3: Teleoperador 🎮
+
+![Imagen de WhatsApp 2025-10-15 a las 12 27 25_16b68cf5](https://github.com/user-attachments/assets/428da961-093d-451a-a12b-832cd0c5edd5)
+
+Qué ves:
+
+Terminal con el control por teclado activo
+
+Instrucciones para mover el robot (WASD)
+
+Parámetros de velocidad del TurtleBot3 Burger
+
+Relación con el código:
+
+bash
+roslaunch turtlebot3_teleop turtlebot3_teleop_key.launch
+Este comando permite controlar el robot con el teclado
+
+# ¿QUÉ ESTÁ SUCEDIENDO? 🔄
+
+Gazebo → Simula la física y el entorno real
+
+RViz → Visualiza los datos del LIDAR y el mapa generado
+
+Teleoperador → Te permite mover el robot para explorar
+
+SLAM → Combina todo para crear el mapa en tiempo real
