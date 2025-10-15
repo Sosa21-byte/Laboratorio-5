@@ -279,6 +279,163 @@ docker run -it --net=host \
 ---
 # Resultados
 
+# Configuración del Entorno para Motion Imitation con PyBullet
 
+## Requisitos del Sistema
 
-¿Te parece bien esta estructura, bro? Con esto ya tienes todo organizado para GitHub y los ejemplos listos para implementar.
+### 1. Configuración de WSL y Docker
+```bash
+# Actualizar paquetes del sistema
+sudo apt update
+
+# Instalar Docker
+sudo apt install docker.io -y
+
+# Verificar instalación de Docker
+docker --version
+```
+
+### 2. Configuración de Python y Entorno Virtual
+```bash
+# Verificar versión de Python
+python3 --version
+
+# Crear entorno virtual
+python3 -m venv pybullet_env
+
+# Activar entorno virtual
+source pybullet_env/bin/activate
+
+# Instalar PyBullet
+pip install pybullet
+```
+
+## Scripts de Prueba
+
+### 3. Prueba Básica de PyBullet (Plano)
+```python
+import pybullet as p
+import pybullet_data
+import time
+
+physicsClient = p.connect(p.GUI)
+p.setGravity(0, 0, -9.8)
+p.setAdditionalSearchPath(pybullet_data.getDataPath())
+
+planeId = p.loadURDF("plane.urdf")
+
+input("Presiona ENTER para continuar...")
+p.disconnect()
+```
+
+**Este script inicializa PyBullet en modo GUI, establece la gravedad, carga un plano y espera a que el usuario presione ENTER antes de finalizar.**
+
+### 4. Prueba con Cuadrúpedo A1
+```python
+import pybullet as p
+import pybullet_data
+import time
+import os
+
+physicsClient = p.connect(p.GUI)
+p.setGravity(0, 0, -9.8)
+p.setAdditionalSearchPath(pybullet_data.getDataPath())
+
+planeId = p.loadURDF("plane.urdf")
+
+urdf_paths = [
+    "quadruped/a1.urdf",
+    "a1/a1.urdf",
+    "robots/a1.urdf",
+    "motion_imitation/robots/a1.urdf"
+]
+
+robotId = None
+for path in urdf_paths:
+    if os.path.exists(path):
+        robotStartPos = [0, 0, 0.3]
+        robotStartOrientation = p.getQuaternionFromEuler([0, 0, 0])
+        robotId = p.loadURDF(path, robotStartPos, robotStartOrientation)
+        break
+
+if robotId is None:
+    print("No se encontró el URDF del cuadrúpedo")
+```
+
+**Este script busca y carga el modelo del robot cuadrúpedo A1 en diferentes ubicaciones posibles, posicionándolo ligeramente por encima del plano.**
+
+### 5. Cuadrúpedo Estable con Control Básico
+```python
+import pybullet as p
+import pybullet_data
+import time
+
+physicsClient = p.connect(p.GUI)
+p.setGravity(0, 0, -9.8)
+p.setAdditionalSearchPath(pybullet_data.getDataPath())
+
+planeId = p.loadURDF("plane.urdf")
+robotId = p.loadURDF("a1/a1.urdf", [0, 0, 0.5])
+
+num_joints = p.getNumJoints(robotId)
+for i in range(num_joints):
+    p.setJointMotorControl2(robotId, i, p.POSITION_CONTROL, targetPosition=0)
+
+for _ in range(1000):
+    p.stepSimulation()
+    time.sleep(1./240.)
+
+p.disconnect()
+```
+
+**Carga el robot A1 y establece todos sus motores en control de posición con valor 0, manteniendo al robot en una pose estable durante la simulación.**
+
+### 6. Cuadrúpedo en Movimiento
+```python
+import pybullet as p
+import pybullet_data
+import time
+import math
+
+physicsClient = p.connect(p.GUI)
+p.setGravity(0, 0, -9.8)
+p.setAdditionalSearchPath(pybullet_data.getDataPath())
+
+planeId = p.loadURDF("plane.urdf")
+robotId = p.loadURDF("a1/a1.urdf", [0, 0, 0.5])
+
+num_joints = p.getNumJoints(robotId)
+leg_joints = [1, 4, 7, 10]
+
+for i in range(1000):
+    for joint in leg_joints:
+        angle = math.sin(i * 0.1) * 0.5
+        p.setJointMotorControl2(robotId, joint, p.POSITION_CONTROL, targetPosition=angle)
+    
+    p.stepSimulation()
+    time.sleep(1./240.)
+
+p.disconnect()
+```
+
+**Implementa un movimiento oscilatorio en las articulaciones de las patas del robot usando funciones senoidales, creando un patrón de caminata básico.**
+
+## Comandos de Verificación
+
+```bash
+# Verificar instalaciones
+python3 --version
+docker --version
+
+# Buscar archivos URDF del robot
+find . -name "*.urdf" -o -name "a1*" | grep -v "__pycache__"
+```
+# Resultados Graficos 
+
+![Imagen de WhatsApp 2025-10-15 a las 10 35 41_739a39e6](https://github.com/user-attachments/assets/8920233a-d536-4a1e-bdd8-f7068885cd93)
+
+![Imagen de WhatsApp 2025-10-15 a las 10 36 14_c1c9ad18](https://github.com/user-attachments/assets/bc49d6cd-da4e-412c-96d5-46560b41a946)
+
+![Imagen de WhatsApp 2025-10-15 a las 10 46 58_e3500257](https://github.com/user-attachments/assets/be18e84c-e796-42e0-afd4-c9aa071367be)
+
+![Imagen de WhatsApp 2025-10-15 a las 11 41 43_ada6d1ec](https://github.com/user-attachments/assets/f8fb8c89-e937-4f45-9f38-701459b4533f)
