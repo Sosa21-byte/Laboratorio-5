@@ -438,3 +438,89 @@ find . -name "*.urdf" -o -name "a1*" | grep -v "__pycache__"
 ![Imagen de WhatsApp 2025-10-15 a las 10 46 58_e3500257](https://github.com/user-attachments/assets/be18e84c-e796-42e0-afd4-c9aa071367be)
 
 ![Imagen de WhatsApp 2025-10-15 a las 11 41 43_ada6d1ec](https://github.com/user-attachments/assets/f8fb8c89-e937-4f45-9f38-701459b4533f)
+
+# Tercer punto 
+
+# TurtleBot3 con LIDAR y SLAM en Docker
+
+## Descripción
+Implementación de un robot TurtleBot3 con sensor LIDAR usando ROS Noetic y SLAM (gmapping) para creación de mapas en tiempo real, contenerizado en Docker.
+
+## Requisitos
+- Docker instalado
+- Sistema Linux/WSL2 (para display gráfico)
+
+## Estructura del Proyecto
+turtlebot3-project/
+├── Dockerfile
+├── README.md
+└── mapa_generado/ (se crea después)
+
+text
+
+## Paso a Paso
+
+### 1. Construcción de la Imagen Docker
+```bash
+docker build -t turtlebot3-slam .
+Explicación: Construye la imagen a partir del Dockerfile, instalando ROS Noetic, TurtleBot3, simulaciones y el paquete gmapping para SLAM.
+
+2. Ejecución del Contenedor
+bash
+docker run -it --name slam-bot --env="DISPLAY" --env="QT_X11_NO_MITSHM=1" --volume="/tmp/.X11-unix:/tmp/.X11-unix:rw" turtlebot3-slam
+Explicación:
+
+--env="DISPLAY": Permite mostrar interfaces gráficas
+
+--volume="/tmp/.X11-unix...": Comparte el socket de X11 para GUI
+
+Inicia Gazebo con el mundo predeterminado de TurtleBot3
+
+3. Visualización con SLAM (Terminal 2)
+bash
+docker exec -it slam-bot bash
+source /opt/ros/noetic/setup.bash
+export TURTLEBOT3_MODEL=burger
+roslaunch turtlebot3_slam turtlebot3_slam.launch slam_methods:=gmapping
+Explicación: Inicia RViz con gmapping para visualizar el mapa en tiempo real y las lecturas LIDAR.
+
+4. Control del Robot (Terminal 3)
+bash
+docker exec -it slam-bot bash
+source /opt/ros/noetic/setup.bash
+export TURTLEBOT3_MODEL=burger
+roslaunch turtlebot3_teleop turtlebot3_teleop_key.launch
+Explicación: Activa el control por teclado (WASD) para mover el robot y generar el mapa.
+
+5. Guardar el Mapa
+bash
+docker exec -it slam-bot bash
+source /opt/ros/noetic/setup.bash
+rosrun map_server map_saver -f /tmp/mapa_generado
+Explicación: Guarda el mapa generado como mapa_generado.pgm y mapa_generado.yaml.
+
+Posibles Mejoras
+Navegación Autónoma: Integrar move_base para planificación de rutas
+
+Múltiples Entornos: Diferentes mundos de Gazebo para testing
+
+Web Interface: Interfaz web para control remoto
+
+ROS2 Migration: Migrar a ROS2 para mejor performance
+
+Cloud Integration: Subir mapas a la nube para análisis
+
+Trayectorias Desarrolladas
+Mapeo de entornos cerrados (oficinas, laberintos)
+
+Navegación reactiva basada en LIDAR
+
+Localización AMCL para posicionamiento preciso
+ 
+ 
+
+![Imagen de WhatsApp 2025-10-15 a las 12 13 32_a5f90214](https://github.com/user-attachments/assets/f26e8da6-14c9-486f-8756-7d15b72fcece)
+
+![Imagen de WhatsApp 2025-10-15 a las 12 21 27_6dddaf43](https://github.com/user-attachments/assets/d1e15f70-cebf-4739-9edd-3b1592cc0af1)
+
+![Imagen de WhatsApp 2025-10-15 a las 12 27 25_6db038f5](https://github.com/user-attachments/assets/4a2e4922-505a-477e-92af-3ae4e3aaa55a)
