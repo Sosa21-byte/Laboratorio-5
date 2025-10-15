@@ -515,12 +515,8 @@ Mapeo de entornos cerrados (oficinas, laberintos)
 
 Navegación reactiva basada en LIDAR
 
-Localización AMCL para posicionamiento preciso
- 
- 
+Localización AMCL para posicionamiento precion
 
-![Imagen de WhatsApp 2025-10-15 a las 12 13 32_a5f90214](https://github.com/user-attachments/assets/f26e8da6-14c9-486f-8756-7d15b72fcece)
+----
 
-![Imagen de WhatsApp 2025-10-15 a las 12 21 27_6dddaf43](https://github.com/user-attachments/assets/d1e15f70-cebf-4739-9edd-3b1592cc0af1)
-
-![Imagen de WhatsApp 2025-10-15 a las 12 27 25_6db038f5](https://github.com/user-attachments/assets/4a2e4922-505a-477e-92af-3ae4e3aaa55a)
+# Resultados
