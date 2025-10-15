@@ -1,6 +1,5 @@
 # Laboratorio-5
 
-¡Perfecto, bro! Entiendo. Aquí te envío el contenido organizado para que puedas usarlo en GitHub:
 
 ---
 
